@@ -12,6 +12,13 @@ byte addresses[][6] = {"1Node","2Node"};
 // SETUP   SETUP   SETUP   SETUP   SETUP   SETUP   SETUP   SETUP   SETUP
 // -----------------------------------------------------------------------------
 void setup() {
+
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+
+  
   Serial.begin(9600);
   Serial.println("THIS IS THE RECEIVER CODE - YOU NEED THE OTHER ARDUINO TO TRANSMIT");
 
@@ -23,8 +30,12 @@ void setup() {
   radio.setPALevel(RF24_PA_LOW);
 
   // Set the speed of the transmission to the quickest available
-  //radio.setDataRate(RF24_2MBPS);
-  radio.setDataRate(RF24_250KBPS);
+  radio.setDataRate(RF24_2MBPS);
+  //radio.setDataRate(RF24_250KBPS);
+
+
+radio.setRetries(15,15);
+radio.setPayloadSize(1);
 
   // Use a channel unlikely to be used by Wifi, Microwave ovens etc
   radio.setChannel(120);
@@ -56,6 +67,14 @@ void loop() {
     // No more data to get so send it back but add 1 first just for kicks
     // First, stop listening so we can talk
     radio.stopListening();
+    
+  digitalWrite(2, bitRead(data,0));
+  digitalWrite(3, bitRead(data,1));
+  digitalWrite(4, bitRead(data,2));
+  digitalWrite(5, bitRead(data,3));
+    
+    
+    
     data++;
     radio.write( &data, sizeof(char) );
 
@@ -66,4 +85,14 @@ void loop() {
     Serial.print("Sent response ");
     Serial.println(data);
   }
+  else
+  {
+  /*
+  digitalWrite(2, bitRead(data,0));
+  digitalWrite(3, bitRead(data,1));
+  digitalWrite(4, bitRead(data,2));
+  digitalWrite(5, bitRead(data,3));
+  */
+  }
+  
 }
